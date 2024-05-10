@@ -155,9 +155,21 @@ public class Tabuleiro {
                 	//Checking if it is a diagonal movement
                 if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
                 	
-                	//Calling the function to do the movement
-                    this.doMovement(piecex, piecey, movex, movey);
-                    return true;
+                	//Checking if the piece is moving forward
+                	if(piecex - movex < 0) {
+                		
+                		//Calling the function to do the movement
+                        this.doMovement(piecex, piecey, movex, movey);
+                        return true;
+                		
+                	}else {
+                		
+                		System.out.println("10");
+                        System.out.println("Impossible move! Insert Again:");
+                        return false;
+                		
+                	}
+                	
                     
                     
                 } else {
@@ -169,10 +181,20 @@ public class Tabuleiro {
               //Checking if it is a diagonal movement
             } else if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
             	
-            	//Calling the function to do the movement
-                this.doMovement(piecex, piecey, movex, movey);
-                return true;
-                
+            	//Checking if the piece is moving forward
+            	if(piecex - movex > 0) {
+            		
+            		//Calling the function to do the movement
+                    this.doMovement(piecex, piecey, movex, movey);
+                    return true;
+            		
+            	}else {
+            		
+            		System.out.println("10");
+                    System.out.println("Impossible move! Insert Again:");
+                    return false;
+            		
+            	}
                 
             } else {
                 System.out.println("5");
