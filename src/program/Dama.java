@@ -31,9 +31,46 @@ public class Dama {
 			int movex = sc.nextInt();
 			int movey = sc.nextInt();
 
-			move = tab.checkMovement(piecex, piecey, movex, movey);
+			if (tab.checkMovement(piecex, piecey, movex, movey)) {
+
+				if (tab.checkToEat(movex, movey, piecex, piecey)) {
+
+					if (tab.doEatMovement(piecex, piecey, movex, movey)){
+						
+						move = true;
+						
+					}else {
+						
+						move = false;
+						
+					}
+
+					
+				} else {
+
+					if (tab.simpleMove(piecex, piecey, movex, movey) == true) {
+
+						tab.doMovement(piecex, piecey, movex, movey);
+						
+						move = true;
+
+					} else {
+
+						move = false;
+
+					}
+
+				}
+			}
+			
+			if(move == false) {
+				
+				System.out.println("Impossible move! Insert Again:");
+				
+			}
 
 			tab.checkWhoseRound();
+
 			if (tab.getP() == 'W') {
 
 				System.out.println("White's turn!");
