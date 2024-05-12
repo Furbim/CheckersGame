@@ -11,20 +11,30 @@ public class Dama {
 		Scanner sc = new Scanner(System.in);
 
 		Tabuleiro tab = new Tabuleiro();
+		
+		boolean move = false;
 
 		tab.createTable();
 
 		tab.positioPieces();
-
+		
 		System.out.println("White plays first!");
-
-		tab.showTable();
-
-		boolean move = false;
-
+		
 		do {
+			
+			tab.showTable();
+			
+			
+			if (move == false) {
 
-			System.out.println("Please insert the column and then the line from 1 to 8:");
+				System.out.println("Impossible move! Insert Again:");
+
+			}else {
+				
+				System.out.println("Please insert the column and then the line from 1 to 8:");
+				
+			}
+			
 
 			int piecex = sc.nextInt();
 			int piecey = sc.nextInt();
@@ -35,23 +45,22 @@ public class Dama {
 
 				if (tab.checkToEat(movex, movey, piecex, piecey)) {
 
-					if (tab.doEatMovement(piecex, piecey, movex, movey)){
-						
+					if (tab.doEatMovement(piecex, piecey, movex, movey)) {
+
 						move = true;
-						
-					}else {
-						
+
+					} else {
+
 						move = false;
-						
+
 					}
 
-					
 				} else {
 
 					if (tab.simpleMove(piecex, piecey, movex, movey) == true) {
 
 						tab.doMovement(piecex, piecey, movex, movey);
-						
+
 						move = true;
 
 					} else {
@@ -62,16 +71,10 @@ public class Dama {
 
 				}
 			}
-			
-			if(move == false) {
-				
-				System.out.println("Impossible move! Insert Again:");
-				
-			}
 
 			tab.checkWhoseRound();
 
-			if (tab.getP() == 'W') {
+			if (tab.getP() == 'w') {
 
 				System.out.println("White's turn!");
 
