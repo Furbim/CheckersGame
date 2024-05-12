@@ -29,34 +29,6 @@ public class Tabuleiro {
 
 	}
 
-	// Function to format the board
-	public void showTable() {
-
-		String msg = "";
-		String columns = "   ";
-
-		int i;
-		for (i = 0; i < this.matriz.length; ++i) {
-			columns = columns + i + " ";
-		}
-
-		columns = columns + "<- Y";
-
-		for (i = 0; i < this.matriz.length; ++i) {
-			msg = msg + " " + i + " ";
-
-			for (int j = 0; j < this.matriz.length; ++j) {
-				msg = msg + this.matriz[i][j] + " ";
-			}
-
-			msg = msg + "\n";
-		}
-
-		msg = msg + " ^\n |\n X";
-		this.table = columns + "\n" + msg;
-		System.out.println(this.table);
-	}
-
 	// Function to position the pieces over the board
 	public void positioPieces() {
 
@@ -88,6 +60,34 @@ public class Tabuleiro {
 		}
 
 		this.showTable();
+	}
+
+	// Function to format the board
+	public void showTable() {
+
+		String msg = "";
+		String columns = "   ";
+
+		int i;
+		for (i = 0; i < this.matriz.length; ++i) {
+			columns = columns + i + " ";
+		}
+
+		columns = columns + "<- Y";
+
+		for (i = 0; i < this.matriz.length; ++i) {
+			msg = msg + " " + i + " ";
+
+			for (int j = 0; j < this.matriz.length; ++j) {
+				msg = msg + this.matriz[i][j] + " ";
+			}
+
+			msg = msg + "\n";
+		}
+
+		msg = msg + " ^\n |\n X";
+		this.table = columns + "\n" + msg;
+		System.out.println(this.table);
 	}
 
 	// Function to check if it's black or white's turn with pair or odd system
@@ -154,51 +154,61 @@ public class Tabuleiro {
 
 	}
 
+	// Function to check if the simple move is possible
 	public boolean simpleMove(int piecex, int piecey, int movex, int movey) {
 
-		if (this.P != 'w') {
-			System.out.println("3");
+		if (itsKing(piecex, piecey) == true) {
+			
+			
 
-			// Checking if it is a diagonal movement
-			if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
+		} else {
+
+			if (this.P != 'w') {
+				System.out.println("3");
+
+				// Checking if it is a diagonal movement
+				if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
+
+					// Checking if the piece is moving forward
+					if (piecex - movex < 0) {
+
+						// Calling the function to do the movement
+						return true;
+
+					} else {
+
+						return false;
+
+					}
+
+				} else {
+
+					System.out.println("Impossible move! Insert Again:");
+					return false;
+				}
+
+				// Checking if it is a diagonal movement
+			} else if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
 
 				// Checking if the piece is moving forward
-				if (piecex - movex < 0) {
+				if (piecex - movex > 0) {
 
-					// Calling the function to do the movement
 					return true;
 
 				} else {
 
+					System.out.println("10");
+					System.out.println("Impossible move! Insert Again:");
 					return false;
 
 				}
 
 			} else {
-
-				System.out.println("Impossible move! Insert Again:");
 				return false;
 			}
-
-			// Checking if it is a diagonal movement
-		} else if (Math.abs(movex - piecex) == 1 && Math.abs(movey - piecey) == 1) {
-
-			// Checking if the piece is moving forward
-			if (piecex - movex > 0) {
-
-				return true;
-
-			} else {
-
-				System.out.println("10");
-				System.out.println("Impossible move! Insert Again:");
-				return false;
-
-			}
-
-		} else {
-			return false;
 		}
+		
+		return false;
 	}
 
 	// Function to check if it's a eating movement
@@ -206,24 +216,29 @@ public class Tabuleiro {
 
 		checkWhoseRound();
 
-		for (int i = -1; i <= 1; ++i) {
-			for (int j = -1; j <= 1; ++j) {
-				if (i != 0 || j != 0) {
-					try {
+		if (itsKing(piecex, piecey) == true) {
 
-						// Here I used try because I can't find a way to check if the movement
-						if (this.matriz[piecex + i][piecey + j] == this.OP && piecex + i + i == movex
-								&& piecey + j + j == movey) {
+		} else {
 
-							return true;
+			for (int i = -1; i <= 1; ++i) {
+				for (int j = -1; j <= 1; ++j) {
+					if (i != 0 || j != 0) {
+						try {
+
+							// Here I used try because I can't find a way to check if the movement
+							if (this.matriz[piecex + i][piecey + j] == this.OP && piecex + i + i == movex
+									&& piecey + j + j == movey) {
+
+								return true;
+							}
+
+						} catch (Exception e) {
+
 						}
-
-					} catch (Exception e) {
 
 					}
 
 				}
-
 			}
 		}
 
@@ -231,6 +246,7 @@ public class Tabuleiro {
 		return false;
 	}
 
+	// Function to do the eating movement
 	public boolean doEatMovement(int piecex, int piecey, int movex, int movey) {
 
 		int i = 0, j = 0;
@@ -325,24 +341,21 @@ public class Tabuleiro {
 									rodada++;
 
 								}
-								
-								//Checking if it have one cause is enough to check
-								if (contwm < 0) {
-									if (checkMovement(i, j, i + wi, j + wj) == true) {
 
-										if (checkToEat(i + wi, j + wj, i, j) == true) {
+								if (checkMovement(i, j, i + wi, j + wj) == true) {
+
+									if (checkToEat(i + wi, j + wj, i, j) == true) {
+
+										contwm++;
+
+									} else {
+
+										if (simpleMove(i, j, i + wi, j + wj) == true) {
 
 											contwm++;
 
-										} else {
-
-											if (simpleMove(i, j, i + wi, j + wj) == true) {
-
-												contwm++;
-
-											}
-
 										}
+
 									}
 								}
 
@@ -353,31 +366,27 @@ public class Tabuleiro {
 									rodada++;
 
 								}
-								
-								//Checking if it have one cause is enough to check
-								if (contbm < 0) {
 
-									if (checkMovement(i, j, i + wi, j + wj) == true) {
+								if (checkMovement(i, j, i + wi, j + wj) == true) {
 
-										if (checkToEat(i + wi, j + wj, i, j) == true) {
+									if (checkToEat(i + wi, j + wj, i, j) == true) {
 
-											System.out.println("Aqui chegou 3");
+										System.out.println("Aqui chegou 3");
+										contbm++;
+
+									} else {
+
+										if (simpleMove(i, j, i + wi, j + wj) == true) {
+
+											System.out.println("Aqui chegou 4");
 											contbm++;
 
-										} else {
-
-											if (simpleMove(i, j, i + wi, j + wj) == true) {
-
-												System.out.println("Aqui chegou 4");
-												contbm++;
-
-											}
-
 										}
+
 									}
 								}
-
 							}
+
 						}
 					}
 				}
@@ -387,8 +396,7 @@ public class Tabuleiro {
 
 		resetRound();
 
-		
-		//Checking if the pieces has no movements
+		// Checking if the pieces has no movements
 		if (contwm == 0) {
 
 			System.out.println("Black Wins");
@@ -428,12 +436,14 @@ public class Tabuleiro {
 		return false;
 	}
 
+	// Function to reset the round with the bkp
 	public void resetRound() {
 
 		rodada = rodadabkp;
 
 	}
 
+	// Function to check if the piece is a king
 	public boolean itsKing(int piecex, int piecey) {
 
 		checkWhoseRound();
