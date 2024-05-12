@@ -123,24 +123,30 @@ public class Tabuleiro {
 
 		checkWhoseRound();
 
-		// Checking if the movement is within the limits of the matrix
-		if (movex >= 0 && movex <= 7 && movey >= 0 && movey <= 7) {
-			if (this.matriz[piecex][piecey] != this.P) {
-				System.out.println("1");
-				System.out.println("Impossible move!Insert Again:");
+		if (piecex >= 0 && piecex <= 7 && piecey >= 0 && piecey <= 7) {
+
+			// Checking if the movement is within the limits of the matrix
+			if (movex >= 0 && movex <= 7 && movey >= 0 && movey <= 7) {
+				if (this.matriz[piecex][piecey] != this.P) {
+					System.out.println("1");
+					System.out.println("Impossible move!Insert Again:");
+					return false;
+
+					// Checking if the move house is empty
+				} else if (this.matriz[movex][movey] != '-') {
+
+					System.out.println("2");
+					System.out.println("Impossible move!Insert Again:");
+					return false;
+
+				}
+
+				return true;
+
+			} else {
+
 				return false;
-
-				// Checking if the move house is empty
-			} else if (this.matriz[movex][movey] != '-') {
-
-				System.out.println("2");
-				System.out.println("Impossible move!Insert Again:");
-				return false;
-
 			}
-
-			return true;
-
 		} else {
 
 			return false;
@@ -180,7 +186,6 @@ public class Tabuleiro {
 			// Checking if the piece is moving forward
 			if (piecex - movex > 0) {
 
-				// Calling the function to do the movement
 				return true;
 
 			} else {
@@ -286,9 +291,9 @@ public class Tabuleiro {
 		for (i = 0; i < this.matriz.length; ++i) {
 			for (j = 0; j < this.matriz.length; ++j) {
 				if (this.matriz[i][j] == 'w') {
-					++contw;
+					contw++;
 				} else if (this.matriz[i][j] == 'b') {
-					++contb;
+					contb++;
 				}
 			}
 		}
@@ -308,74 +313,87 @@ public class Tabuleiro {
 		for (i = 0; i < this.matriz.length; ++i) {
 			for (j = 0; j < this.matriz.length; ++j) {
 
-				for (int wi = -2; wi < 3; ++wi) {
-					for (int wj = -2; wj < 3; ++wj) {
+				if (this.matriz[i][j] != '-') {
 
-						if (this.matriz[i][j] == 'w') {
+					for (int wi = -1; wi < 2; ++wi) {
+						for (int wj = -1; wj < 2; ++wj) {
 
-							if (this.rodada % 2 != 0) {
+							if (this.matriz[i][j] == 'w') {
 
-								rodada++;
+								if (this.rodada % 2 != 0) {
 
-							}
-
-							if (checkMovement(i, j, wi, wj)) {
-
-								if (checkToEat(wi, wj, i, j)) {
-
-									contwm++;
-
-									// Checking whose turn it is
-								} else {
-
-									if (simpleMove(i, j, wi, wj) == true) {
-
-										contwm++;
-
-									}
+									rodada++;
 
 								}
-							}
+								
+								//Checking if it have one cause is enough to check
+								if (contwm < 0) {
+									if (checkMovement(i, j, i + wi, j + wj) == true) {
 
-						} else {
+										if (checkToEat(i + wi, j + wj, i, j) == true) {
 
-							if (this.rodada % 2 == 0) {
+											contwm++;
 
-								rodada++;
+										} else {
 
-							}
+											if (simpleMove(i, j, i + wi, j + wj) == true) {
 
-							if (checkMovement(i, j, wi, wj)) {
+												contwm++;
 
-								if (checkToEat(wi, wj, i, j)) {
+											}
 
-									contbm++;
-
-									// Checking whose turn it is
-								} else {
-
-									if (simpleMove(i, j, wi, wj) == true) {
-
-										contbm++;
-
+										}
 									}
+								}
+
+							} else if (this.matriz[i][j] == 'b') {
+
+								if (this.rodada % 2 == 0) {
+
+									rodada++;
 
 								}
-							}
+								
+								//Checking if it have one cause is enough to check
+								if (contbm < 0) {
 
+									if (checkMovement(i, j, i + wi, j + wj) == true) {
+
+										if (checkToEat(i + wi, j + wj, i, j) == true) {
+
+											System.out.println("Aqui chegou 3");
+											contbm++;
+
+										} else {
+
+											if (simpleMove(i, j, i + wi, j + wj) == true) {
+
+												System.out.println("Aqui chegou 4");
+												contbm++;
+
+											}
+
+										}
+									}
+								}
+
+							}
 						}
 					}
 				}
+
 			}
 		}
-		
+
 		resetRound();
+
 		
+		//Checking if the pieces has no movements
 		if (contwm == 0) {
 
 			System.out.println("Black Wins");
 			return true;
-		} else if (contwm == 0) {
+		} else if (contbm == 0) {
 			System.out.println("White Wins");
 			return true;
 		}
@@ -410,13 +428,12 @@ public class Tabuleiro {
 		return false;
 	}
 
-	
 	public void resetRound() {
-		
+
 		rodada = rodadabkp;
-		
+
 	}
-	
+
 	public boolean itsKing(int piecex, int piecey) {
 
 		checkWhoseRound();
